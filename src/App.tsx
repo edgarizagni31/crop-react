@@ -1,24 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { ChangeEvent, ChangeEventHandler, useState } from 'react';
+import { EasyCropp } from './components/EasyCropp';
 
 function App() {
+  const [image, setImage] = useState<string>('');
+  const [showCrop, setShowCrop] = useState(false);
+
+  const loadingImage: ChangeEventHandler<HTMLInputElement> = (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = e.target.files;
+
+    if (files?.length) {
+      setImage(URL.createObjectURL(files[0]));
+      setShowCrop(true);
+    }
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='container my-4'>
+      <input type='file' onChange={loadingImage} className='form-control' />
+      {showCrop && image && (
+        <EasyCropp
+          image={image}
+          setImage={setImage}
+          setShowCrop={setShowCrop}
+        />
+      )}
+      {!showCrop && image && <img src={image} alt='' />}
     </div>
   );
 }
